@@ -1,0 +1,42 @@
+#------------------------------------------
+# GitHub Actions automation QA-Basics
+#
+#Copyleft (c) by me 2022.
+#------------------------------------------
+
+name: GitHubAction QA-Basics
+
+on:
+  push:
+    branches:
+      - test
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run jest tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Use actions/checkout@v2
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache the yarn
+        id: yarn-cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      
+      - name: Run tests
+        run: yarn test
