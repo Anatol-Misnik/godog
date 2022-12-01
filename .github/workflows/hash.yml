@@ -11,22 +11,19 @@ on:
     branches:
       - test
 jobs:
-  printing-hello:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Hi
-        run: echo "Hello Work"
-      - name: Go version
-        run: go version
-        
   automation-result:
     runs-on: ubuntu-latest
-    needs: [printing-hello]
+#    needs: [printing-hello]
     steps:
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.sha_short }}       
+
       - name: Print Result
         run: |
           echo "ENDPOINT: $AE_ENDPOINT"
           echo "CLIENT: ${{ env.AUTH0_CLIENT }}"
           echo "Commit hash: ${{ env.COMMIT_HASH }}"
-          echo "GoDog mode: ${{ env.GODOG_MODE }}"
-          echo "The Work is Done successfully"
+          echo "Short_hash: $GITHUB_OUTPUT"
