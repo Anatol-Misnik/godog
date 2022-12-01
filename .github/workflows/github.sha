@@ -1,0 +1,34 @@
+
+#-----------------------------------------------
+# introduction of automation v2
+# 2022
+#-----------------------------------------------
+
+name: test
+env:
+  COMMIT_HASH: "automation-commit-version-${{ github.sha }}"
+on:
+  push:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List current folder
+        run: ls -la
+      - name: Go version
+        run: go version
+      - name: Aws/Pyton/Linux version
+        run: aws --version
+        
+  automation-result:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: Print Result
+        run: |
+          echo "ENDPOINT: $AE_ENDPOINT"
+          echo "GoDog mode: ${{ env.GODOG_MODE }}"
+          echo "Commit hash: ${{ env.COMMIT_HASH }}"
+          echo "The Work is Done successfully"
